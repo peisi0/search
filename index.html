@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>Kimi 风格搜索框</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root {
+  --theme: #6366f1;
+  --radius: 28px;
+  --height: 56px;
+  --maxW: 640px;
+  
+  /* 浅色模式变量 */
+  --bg-color: #f7f8fc;
+  --text-color: #333;
+  --input-bg: #fff;
+  --input-border: #e0e0e0;
+  --placeholder-color: #999;
+  --shadow-color: rgba(0, 0, 0, 0.15);
+  --mode-icon: "\f186"; /* 月亮图标 */
+}
+
+/* 深色模式变量 */
+[data-theme="dark"] {
+  --bg-color: #121212;
+  --text-color: #e0e0e0;
+  --input-bg: #1e1e1e;
+  --input-border: #333;
+  --placeholder-color: #888;
+  --shadow-color: rgba(0, 0, 0, 0.4);
+  --mode-icon: "\f185"; /* 太阳图标 */
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+body {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-color);
+  color: var(--text-color);
+}
+
+/* 去掉 WebKit 自带 × */
+input[type="search"]::-webkit-search-cancel-button { display: none; }
+
+#search-wrapper {
+  position: relative;
+  width: 90%;
+  max-width: var(--maxW);
+}
+
+#searchInput {
+  width: 100%;
+  height: var(--height);
+  padding: 0 100px 0 24px;   /* 右侧给按钮留空 */
+  font-size: 18px;
+  background: var(--input-bg);
+  color: var(--text-color);
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius);
+  outline: none;
+  transition: border-color .25s;
+}
+
+#searchInput:focus {
+  border-color: var(--theme);
+}
+
+#searchInput::placeholder {
+  color: var(--placeholder-color);
+  transition: opacity .3s;
+}
+
+#searchInput:focus::placeholder {
+  opacity: .35;
+}
+
+/* 内嵌按钮 */
+#searchBtn {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 50%;
+  background: var(--theme);
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px var(--shadow-color);
+  transition: transform .2s;
+}
+
+#searchBtn:hover {
+  transform: translateY(-50%) scale(1.05);
+}
+
+#searchBtn:active {
+  transform: translateY(-50%) scale(.95);
+}
+
+/* 主题切换按钮 */
+#themeToggle {
+  position: absolute;
+  right: 56px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-color);
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s;
+}
+
+#themeToggle:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark"] #themeToggle:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+#themeToggle::before {
+  content: var(--mode-icon);
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+}
+</style>
+</head>
+<body>
+
+<div id="search-wrapper">
+  <input id="searchInput" type="search" placeholder="Search" autocomplete="off">
+  <button id="themeToggle" type="button" aria-label="切换主题"></button>
+  <button id="searchBtn" type="button"><i class="fas fa-search"></i></button>
+</div>
+
+<script>
+const input = document.getElementById('searchInput');
+const btn = document.getElementById('searchBtn');
+const themeToggle = document.getElementById('themeToggle');
+
+// 检测系统主题偏好
+const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+
+// 从本地存储获取主题设置，或使用系统偏好
+let currentTheme = localStorage.getItem('theme') || 
+                  (prefersDarkScheme.matches ? 'dark' : 'light');
+
+// 应用主题
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('theme', theme);
+  currentTheme = theme;
+}
+
+// 初始化主题
+applyTheme(currentTheme);
+
+// 切换主题
+themeToggle.addEventListener('click', () => {
+  const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+  applyTheme(newTheme);
+});
+
+function doSearch(q) {
+  if(!q.trim()) return;
+  console.log('搜索关键词：', q);
+  if(q.trim().toLowerCase() === 'win11') {
+    location.href = 'https://peisi0.github.io/win11';
+  } else {
+    location.href = 'https://google.com/search?q=' + encodeURIComponent(q);
+  }
+}
+
+/* 回车 */
+input.addEventListener('keydown', e => {
+  if(e.key === 'Enter') {
+    e.preventDefault();
+    doSearch(input.value);
+  }
+});
+
+/* 点击图标 */
+btn.addEventListener('click', () => doSearch(input.value));
+</script>
+</body>
+</html>
