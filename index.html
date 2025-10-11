@@ -191,7 +191,11 @@ function doSearch(q) {
   console.log('搜索关键词：', q);
   if(q.trim().toLowerCase() === 'win11') {
     location.href = 'https://peisi0.github.io/win11';
-  } else {
+  } 
+  else if(q.trim().toLowerCase() === 'underia') {
+    location.href = 'https://klpig.github.io/underia';
+  }
+  else {
     location.href = 'https://google.com/search?q=' + encodeURIComponent(q);
   }
 }
