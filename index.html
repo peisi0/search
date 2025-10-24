@@ -86,7 +86,6 @@ input[type="search"]::-webkit-search-cancel-button { display: none; }
   opacity: .35;
 }
 
-/* 内嵌按钮 */
 #searchBtn {
   position: absolute;
   right: 6px;
@@ -115,7 +114,6 @@ input[type="search"]::-webkit-search-cancel-button { display: none; }
   transform: translateY(-50%) scale(.95);
 }
 
-/* 主题切换按钮 */
 #themeToggle {
   position: absolute;
   right: 56px;
@@ -153,7 +151,7 @@ input[type="search"]::-webkit-search-cancel-button { display: none; }
 <body>
 
 <div id="search-wrapper">
-  <input id="searchInput" type="search" placeholder="Search" autocomplete="off">
+  <input id="searchInput" type="search" placeholder="Search" autocomplete="off" autofocus>
   <button id="themeToggle" type="button" aria-label="切换主题"></button>
   <button id="searchBtn" type="button"><i class="fas fa-search"></i></button>
 </div>
@@ -163,10 +161,8 @@ const input = document.getElementById('searchInput');
 const btn = document.getElementById('searchBtn');
 const themeToggle = document.getElementById('themeToggle');
 
-// 检测系统主题偏好
 const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
 
-// 从本地存储获取主题设置，或使用系统偏好
 let currentTheme = localStorage.getItem('theme') || 
                   (prefersDarkScheme.matches ? 'dark' : 'light');
 
